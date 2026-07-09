@@ -1,0 +1,62 @@
+# OS
+.DS_Store
+
+# HBuilderX
+unpackage/
+.hbuilderx/launch.json.user
+.workbuddy/
+
+# Node
+node_modules/
+
+# uniCloud 云函数密钥：永不入 git
+uniCloud-aliyun/cloudfunctions/*/config.json
+!uniCloud-aliyun/cloudfunctions/*/config.example.json
+
+# 微信小程序私有配置（含本地 appid/上传设置等，不入 git）
+project.private.config.json
+
+# 通用密钥/证书兜底：任何位置的 .env、密钥、证书都不入 git
+.env
+.env.*
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.cer
+*.certSigningRequest
+
+# OCR 回归 fixtures：禁止任何图片入仓（含隐私的真排班表，脱敏的也不入）
+tests/ocr-schedule/fixtures/*.jpg
+tests/ocr-schedule/fixtures/*.jpeg
+tests/ocr-schedule/fixtures/*.png
+tests/ocr-schedule/fixtures/*.heic
+tests/ocr-schedule/fixtures/*.webp
+
+# pre-commit hook 测试目录（带 .todelete 后缀的临时目录，永远不入 git）
+_hooktest.todelete*/
+_*.todelete*/
+
+# HBuilderX 用户级 IDE 配置
+.hbuilderx/
+
+# 备份文件
+*.bak
+*.bak-*
+*.backup
+*~
+
+# 日志
+*.log
+npm-debug.log*
+
+# 编辑器 / IDE
+.idea/
+.vscode/
+
+# 业务上严格不入 git 的产物：
+# - 真实排班图 / 影像图（即使脱敏）
+# - 患者敏感字段 csv / json
+# - 用户上传的脱敏前原图（不应该出现在仓库中）
+**/raw_uploads/
+**/patient_data/

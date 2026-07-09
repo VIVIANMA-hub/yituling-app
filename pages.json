@@ -1,0 +1,248 @@
+{
+        "pages": [
+                {
+                        "path": "pages/index/index",
+                        "style": {
+                                "navigationBarTitleText": "首页",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/notes/notes",
+                        "style": {
+                                "navigationBarTitleText": "经验共创",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/schedule/schedule",
+                        "style": {
+                                "navigationBarTitleText": "排班助手",
+                                "navigationStyle": "custom",
+                                "app-plus": {
+                                        "bounce": "none"
+                                }
+                        }
+                },
+                {
+                        "path": "pages/account/login",
+                        "style": {
+                                "navigationBarTitleText": "登录",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/account/index",
+                        "style": {
+                                "navigationBarTitleText": "账户",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/account/invite",
+                        "style": {
+                                "navigationBarTitleText": "邀请同事",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/account/bind-phone",
+                        "style": {
+                                "navigationBarTitleText": "补绑手机号",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/notes/mine",
+                        "style": {
+                                "navigationBarTitleText": "我的笔记",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/admin/review",
+                        "style": {
+                                "navigationBarTitleText": "社区审核",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/admin/cobook",
+                        "style": {
+                                "navigationBarTitleText": "出书共创素材库",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/schedule/respond",
+                        "style": {
+                                "navigationBarTitleText": "排班响应",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/schedule/responses",
+                        "style": {
+                                "navigationBarTitleText": "回执列表",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/schedule/my-shares",
+                        "style": {
+                                "navigationBarTitleText": "我的分享",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/schedule/my-responses",
+                        "style": {
+                                "navigationBarTitleText": "我的响应",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/anonymize/anonymize",
+                        "style": {
+                                "navigationBarTitleText": "脱敏助手",
+                                "navigationStyle": "custom",
+                                "app-plus": {
+                                        "bounce": "none"
+                                }
+                        }
+                },
+                {
+                        "path": "pages/dictionary/dictionary",
+                        "style": {
+                                "navigationBarTitleText": "避坑词典",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/knowledge/knowledge",
+                        "style": {
+                                "navigationBarTitleText": "一图灵知识夹",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/credit/credit",
+                        "style": {
+                                "navigationBarTitleText": "学分管家",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/index/splash",
+                        "style": {
+                                "navigationBarTitleText": "欢迎",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/notes/detail",
+                        "style": {
+                                "navigationBarTitleText": "经验详情",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/public/agreement",
+                        "style": {
+                                "navigationBarTitleText": "用户服务协议",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/public/privacy",
+                        "style": {
+                                "navigationBarTitleText": "隐私政策",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/public/login",
+                        "style": {
+                                "navigationBarTitleText": "登录注册",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/settings/settings",
+                        "style": {
+                                "navigationBarTitleText": "系统设置",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/vip/vip",
+                        "style": {
+                                "navigationBarTitleText": "会员中心",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/share/share",
+                        "style": {
+                                "navigationBarTitleText": "邀请同事",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/tasks/tasks",
+                        "style": {
+                                "navigationBarTitleText": "任务中心",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/contact/contact",
+                        "style": {
+                                "navigationBarTitleText": "联系客服",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/invoice/invoice",
+                        "style": {
+                                "navigationBarTitleText": "发票中心",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/sdk/sdk",
+                        "style": {
+                                "navigationBarTitleText": "SDK 合规清单",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/account/delete-data",
+                        "style": {
+                                "navigationBarTitleText": "数据删除",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/account/cancel",
+                        "style": {
+                                "navigationBarTitleText": "账号注销",
+                                "navigationStyle": "custom"
+                        }
+                },
+                {
+                        "path": "pages/compliance/apple-account",
+                        "style": {
+                                "navigationBarTitleText": "苹果账号转换清单",
+                                "navigationStyle": "custom"
+                        }
+                }
+        ],
+        "globalStyle": {
+                "navigationBarTextStyle": "black",
+                "navigationBarTitleText": "一图灵",
+                "navigationBarBackgroundColor": "#FBFBFD",
+                "backgroundColor": "#FBFBFD",
+                "navigationStyle": "custom"
+        }
+}

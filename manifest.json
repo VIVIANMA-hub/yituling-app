@@ -1,0 +1,81 @@
+{
+  "name": "一图灵",
+  "appid": "",
+  "description": "基层影像医生的排班、脱敏、知识收藏与经验共创工具",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "vueVersion": "3",
+  "app-plus": {
+    "usingComponents": true,
+    "nvueCompiler": "uni-app",
+    "nvueStyleCompiler": "uni-app",
+    "compilerVersion": 3,
+    "nvueLaunchMode": "fast",
+    "splashscreen": {
+      "alwaysShowBeforeRender": true,
+      "waiting": true,
+      "autoclose": true,
+      "delay": 0
+    },
+    "modules": {
+      "Share": {}
+    },
+    "distribute": {
+      "android": {
+        "package": "com.yituling.app",
+        "permissions": [
+          "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+          "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+          "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\"/>",
+          "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
+          "<uses-permission android:name=\"android.permission.VIBRATE\"/>"
+        ],
+        "schemes": "yituling"
+      },
+      "ios": {
+        "privacyDescription": {
+          "NSCameraUsageDescription": "用于拍摄排班表、脱敏素材或用户主动上传的学习笔记图片。",
+          "NSPhotoLibraryUsageDescription": "用于选择用户主动上传的排班表、脱敏素材或学习笔记图片。",
+          "NSPhotoLibraryAddUsageDescription": "用于将用户生成的脱敏图片、排班图片或推广海报保存到相册。"
+        },
+        "urltypes": "yituling",
+        "capabilities": {
+          "entitlements": {
+            "com.apple.developer.applesignin": ["Default"],
+            "com.apple.developer.associated-domains": ["applinks:yituling.com"]
+          }
+        }
+      },
+      "orientation": [
+        "portrait-primary"
+      ]
+    },
+    "uniStatistics": {
+      "enable": false
+    }
+  },
+  "h5": {
+    "template": "template.h5.html",
+    "router": {
+      "mode": "hash",
+      "base": ""
+    },
+    "devServer": {
+      "https": false
+    },
+    "uniStatistics": {
+      "enable": false
+    }
+  },
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false
+    },
+    "usingComponents": true,
+    "uniStatistics": {
+      "enable": false
+    }
+  }
+}

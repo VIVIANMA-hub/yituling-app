@@ -1,0 +1,1319 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>医图灵 Demo Video</title>
+  <style>
+    :root {
+      --ink: #102033;
+      --muted: #65758a;
+      --line: #d8e3ef;
+      --blue: #2363d1;
+      --cyan: #1aa7b7;
+      --green: #23966e;
+      --violet: #7654c8;
+      --amber: #df7b35;
+      --paper: #f7fbff;
+      --white: #ffffff;
+      --shadow: 0 24px 60px rgba(20, 44, 76, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #07111f;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+    }
+
+    .stage {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 84% 12%, rgba(35, 99, 209, 0.24), transparent 30%),
+        linear-gradient(135deg, #eef7ff 0%, #ffffff 42%, #edf8f4 100%);
+    }
+
+    .topline {
+      position: absolute;
+      left: 42px;
+      right: 42px;
+      top: 28px;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #173354;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    .mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0e1f3c;
+      box-shadow: 0 10px 24px rgba(19, 69, 128, 0.16);
+    }
+
+    .mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .timer {
+      width: 224px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(35, 99, 209, 0.12);
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--blue), var(--violet));
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 520ms ease, transform 720ms ease;
+    }
+
+    .scene.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .subtitle {
+      position: absolute;
+      left: 120px;
+      right: 120px;
+      bottom: 36px;
+      z-index: 12;
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      padding: 12px 26px;
+      border-radius: 18px;
+      background: rgba(7, 17, 31, 0.82);
+      color: #fff;
+      font-size: 24px;
+      line-height: 1.45;
+      text-align: center;
+      box-shadow: 0 18px 44px rgba(7, 17, 31, 0.24);
+      backdrop-filter: blur(16px);
+    }
+
+    .cursor {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 20;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      background: rgba(35, 99, 209, 0.94);
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+      box-shadow: 0 10px 24px rgba(17, 63, 144, 0.28);
+      transition: transform 450ms ease, opacity 280ms ease;
+    }
+
+    .cursor::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 2px solid rgba(35, 99, 209, 0.28);
+      transform: translate(-50%, -50%) scale(0.72);
+      opacity: 0;
+    }
+
+    .cursor.tap::after {
+      animation: tap 620ms ease;
+    }
+
+    @keyframes tap {
+      0% { opacity: 0.8; transform: translate(-50%, -50%) scale(0.7); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.7); }
+    }
+
+    .phone {
+      position: absolute;
+      left: 112px;
+      top: 94px;
+      width: 360px;
+      height: 596px;
+      border-radius: 38px;
+      padding: 14px;
+      background: #101c2e;
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .screen {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 28px;
+      background: var(--paper);
+    }
+
+    .status {
+      height: 32px;
+      padding: 10px 18px 0;
+      display: flex;
+      justify-content: space-between;
+      color: #1a314f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .app-page {
+      position: absolute;
+      inset: 32px 0 0;
+      padding: 0 18px 18px;
+      opacity: 0;
+      transform: translateX(28px);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .app-page.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .page-title {
+      margin: 0 0 6px;
+      font-size: 23px;
+      font-weight: 850;
+      letter-spacing: 0;
+      color: #102033;
+    }
+
+    .page-sub {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .home-hero {
+      min-height: 138px;
+      border-radius: 24px;
+      padding: 22px;
+      background: linear-gradient(135deg, #1b5fc6, #12a3b5);
+      color: white;
+      box-shadow: 0 18px 34px rgba(35, 99, 209, 0.22);
+    }
+
+    .home-hero h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .home-hero p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.55;
+      opacity: 0.92;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .tile {
+      min-height: 92px;
+      border-radius: 18px;
+      padding: 14px;
+      background: #fff;
+      border: 1px solid #dce8f4;
+      box-shadow: 0 12px 20px rgba(24, 52, 91, 0.08);
+    }
+
+    .tile b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .tile span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .tile:nth-child(1) { border-top: 4px solid var(--cyan); }
+    .tile:nth-child(2) { border-top: 4px solid var(--blue); }
+    .tile:nth-child(3) { border-top: 4px solid var(--green); }
+    .tile:nth-child(4) { border-top: 4px solid var(--violet); }
+
+    .desktop-copy {
+      position: absolute;
+      left: 540px;
+      top: 134px;
+      width: 626px;
+      color: #173354;
+    }
+
+    .desktop-copy h2 {
+      margin: 0 0 18px;
+      font-size: 48px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .desktop-copy p {
+      margin: 0;
+      color: #4b627a;
+      font-size: 23px;
+      line-height: 1.6;
+    }
+
+    .feature-poster {
+      position: absolute;
+      right: 70px;
+      bottom: 106px;
+      width: 420px;
+      height: 236px;
+      border-radius: 24px;
+      object-fit: contain;
+      background: #fff;
+      box-shadow: 0 20px 50px rgba(19, 53, 91, 0.14);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .upload-card,
+    .notice-card,
+    .result-card,
+    .dict-card,
+    .post-card {
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid #dce8f4;
+      box-shadow: 0 12px 24px rgba(24, 52, 91, 0.08);
+    }
+
+    .upload-card {
+      height: 112px;
+      display: grid;
+      place-items: center;
+      border-style: dashed;
+      color: #1f5db8;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .scan-box {
+      position: relative;
+      height: 126px;
+      margin-top: 14px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #e8eef5;
+      border: 1px solid #d2dfed;
+    }
+
+    .paper-table {
+      position: absolute;
+      inset: 16px;
+      border-radius: 10px;
+      background: #fff;
+      display: grid;
+      grid-template-columns: 62px repeat(5, 1fr);
+      grid-auto-rows: 19px;
+      gap: 3px;
+      padding: 8px;
+    }
+
+    .cell {
+      border-radius: 4px;
+      background: #eaf1f8;
+    }
+
+    .cell.name {
+      background: #cfdff0;
+    }
+
+    .scan-line {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: #19bdd0;
+      box-shadow: 0 0 16px rgba(25, 189, 208, 0.9);
+      animation: scan 2.1s ease-in-out infinite;
+    }
+
+    @keyframes scan {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(82px); }
+    }
+
+    .ocr-list {
+      margin: 14px 0 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .ocr-row {
+      display: grid;
+      grid-template-columns: 48px 1fr 48px;
+      align-items: center;
+      height: 34px;
+      padding: 0 10px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #dce8f4;
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .ocr-row.on {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    .mini-tag {
+      display: inline-grid;
+      place-items: center;
+      height: 22px;
+      border-radius: 8px;
+      background: #e8f8fb;
+      color: #12879a;
+      font-weight: 800;
+    }
+
+    .poster-card {
+      position: absolute;
+      left: 540px;
+      top: 112px;
+      width: 596px;
+      min-height: 456px;
+      border-radius: 28px;
+      padding: 28px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .process-panel {
+      position: absolute;
+      left: 540px;
+      top: 150px;
+      width: 520px;
+      border-radius: 28px;
+      padding: 28px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      border: 1px solid #dce8f4;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    .process-panel.hide {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+
+    .process-panel h3 {
+      margin: 0 0 18px;
+      font-size: 30px;
+    }
+
+    .step-row {
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 16px 0;
+      border-top: 1px solid #e4edf6;
+    }
+
+    .step-row:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .step-num {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #e8f8fb;
+      color: #12879a;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .step-row b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 18px;
+    }
+
+    .step-row span {
+      display: block;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .poster-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .poster-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .poster-title h3 {
+      margin: 0;
+      font-size: 27px;
+    }
+
+    .watermark {
+      color: rgba(35, 99, 209, 0.38);
+      font-weight: 900;
+      font-size: 19px;
+    }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 70px repeat(7, 1fr);
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .schedule-grid div {
+      min-height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #eef5fb;
+      color: #22344b;
+      font-weight: 700;
+    }
+
+    .schedule-grid .head {
+      background: #2363d1;
+      color: #fff;
+    }
+
+    .schedule-grid .name {
+      background: #e0f4f6;
+      color: #157b8b;
+    }
+
+    .callout {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: #f2fbf9;
+      color: #1b755c;
+      font-size: 15px;
+      line-height: 1.5;
+      border: 1px solid #c9ece2;
+    }
+
+    .anonymize-art {
+      height: 186px;
+      border-radius: 20px;
+      background:
+        radial-gradient(ellipse at center, rgba(20, 42, 72, 0.9) 0 18%, transparent 19%),
+        radial-gradient(ellipse at 38% 50%, rgba(36, 77, 128, 0.88) 0 12%, transparent 13%),
+        radial-gradient(ellipse at 62% 50%, rgba(36, 77, 128, 0.88) 0 12%, transparent 13%),
+        linear-gradient(135deg, #16263e, #d5e1ee);
+      border: 10px solid #fff;
+      box-shadow: inset 0 0 0 1px rgba(16, 32, 51, 0.1), 0 12px 24px rgba(24, 52, 91, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sensitive {
+      position: absolute;
+      left: 18px;
+      top: 14px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.86);
+      color: #1d2c40;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .redact-box {
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      width: 138px;
+      height: 42px;
+      border: 3px solid #ffcd4d;
+      border-radius: 8px;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 350ms ease, transform 350ms ease;
+    }
+
+    .blackout {
+      position: absolute;
+      left: 18px;
+      top: 16px;
+      width: 130px;
+      height: 34px;
+      border-radius: 5px;
+      background: #05070a;
+      opacity: 0;
+      transition: opacity 320ms ease;
+    }
+
+    .redacting .redact-box,
+    .redacted .redact-box {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .redacted .blackout {
+      opacity: 1;
+    }
+
+    .checklist {
+      margin-top: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #dce8f4;
+      font-size: 12px;
+    }
+
+    .check b {
+      color: #23a070;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 850;
+      color: white;
+      background: var(--blue);
+      box-shadow: 0 12px 20px rgba(35, 99, 209, 0.18);
+    }
+
+    .btn.secondary {
+      color: #1f5db8;
+      background: #e8f1ff;
+      box-shadow: none;
+    }
+
+    .safe-card {
+      position: absolute;
+      left: 540px;
+      top: 126px;
+      width: 548px;
+      min-height: 398px;
+      border-radius: 28px;
+      padding: 28px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .safe-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .safe-title {
+      color: #1f7a5e;
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .safe-preview {
+      height: 216px;
+      border-radius: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, #effbf8, #eef5ff);
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 20px;
+      align-items: center;
+      border: 1px solid #cfeee5;
+    }
+
+    .mini-image {
+      height: 142px;
+      border-radius: 16px;
+      background:
+        radial-gradient(ellipse at center, rgba(20, 42, 72, 0.9) 0 18%, transparent 19%),
+        linear-gradient(135deg, #172943, #c8d9e8);
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 8px #fff;
+    }
+
+    .mini-image::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 14px;
+      width: 118px;
+      height: 30px;
+      border-radius: 5px;
+      background: #05070a;
+    }
+
+    .safe-preview p {
+      margin: 0;
+      color: #496075;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .dict-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .dict-card {
+      padding: 13px;
+      border-left: 5px solid var(--green);
+    }
+
+    .dict-card h4,
+    .post-card h4 {
+      margin: 0 0 7px;
+      color: #102033;
+      font-size: 14px;
+    }
+
+    .dict-card p,
+    .post-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      height: 30px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      padding: 0 12px;
+      background: #eaf1f8;
+      color: #52677d;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .tab.on {
+      background: #2363d1;
+      color: white;
+    }
+
+    .post-card {
+      padding: 15px;
+      margin-bottom: 10px;
+    }
+
+    .post-card:first-of-type {
+      border-left: 5px solid var(--violet);
+    }
+
+    .compose {
+      margin-top: 12px;
+      border-radius: 16px;
+      padding: 13px;
+      background: #f3f8ff;
+      border: 1px dashed #b9cae2;
+      color: #2f609a;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .knowledge-panel {
+      position: absolute;
+      left: 540px;
+      top: 128px;
+      width: 560px;
+      border-radius: 28px;
+      padding: 28px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .knowledge-panel.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .knowledge-panel h3 {
+      margin: 0 0 16px;
+      font-size: 28px;
+    }
+
+    .chain-scene {
+      padding: 118px 92px 100px;
+      color: #102033;
+    }
+
+    .chain-card {
+      width: 100%;
+      height: 476px;
+      border-radius: 34px;
+      padding: 46px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.95), rgba(242,251,249,0.95)),
+        radial-gradient(circle at 90% 10%, rgba(118,84,200,0.16), transparent 28%);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.9);
+    }
+
+    .chain-card h2 {
+      margin: 0 0 18px;
+      font-size: 44px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .chain-card p {
+      margin: 0;
+      width: 860px;
+      color: #4b627a;
+      font-size: 22px;
+      line-height: 1.65;
+    }
+
+    .chain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 34px;
+    }
+
+    .chain-item {
+      min-height: 136px;
+      border-radius: 22px;
+      padding: 22px;
+      background: #fff;
+      border: 1px solid #dce8f4;
+      box-shadow: 0 14px 26px rgba(24, 52, 91, 0.07);
+    }
+
+    .chain-item b {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 21px;
+    }
+
+    .chain-item span {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .chain-note {
+      margin-top: 22px;
+      display: inline-flex;
+      align-items: center;
+      height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: #102033;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 850;
+    }
+
+    .closing {
+      display: grid;
+      place-items: center;
+      height: 100%;
+      text-align: center;
+      color: #102033;
+    }
+
+    .closing-card {
+      width: 760px;
+      border-radius: 34px;
+      padding: 54px 56px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      border: 1px solid #dce8f4;
+    }
+
+    .closing-card h2 {
+      margin: 0 0 18px;
+      font-size: 56px;
+      letter-spacing: 0;
+    }
+
+    .closing-card p {
+      margin: 0;
+      color: #32609b;
+      font-size: 25px;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="医图灵 demo 自动演示">
+    <div class="topline">
+      <div class="brand">
+        <span class="mark"><img src="assets/logo.jpg" alt=""></span>
+        <span>医图灵 Demo</span>
+      </div>
+      <div class="timer" aria-hidden="true"><div class="timer-fill"></div></div>
+    </div>
+
+    <section class="scene scene-home active" data-scene="home">
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:41</span><span>5G 100%</span></div>
+          <div class="app-page page-home show">
+            <div class="home-hero">
+              <h1>医图灵</h1>
+              <p>基层医务工作者的非诊断类效率工具 + 经验共创社区</p>
+            </div>
+            <div class="feature-grid">
+              <div class="tile"><b>排班助手</b><span>拍照 OCR 解析，生成分享图</span></div>
+              <div class="tile"><b>脱敏助手</b><span>本地擦除像素，合规分享</span></div>
+              <div class="tile"><b>避坑词典</b><span>医保收费、体位标准快查</span></div>
+              <div class="tile"><b>经验共创</b><span>署名沉淀一线经验</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desktop-copy">
+        <h2>非诊断类效率工具<br>一线经验共创社区</h2>
+        <p>从排班整理、素材脱敏到规范避坑与社区共创，医图灵只做医务工作流提效，不做诊断。</p>
+      </div>
+      <img class="feature-poster" src="assets/features.png" alt="">
+    </section>
+
+    <section class="scene scene-schedule" data-scene="schedule">
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:42</span><span>5G 100%</span></div>
+          <div class="app-page page-schedule">
+            <h2 class="page-title">排班助手</h2>
+            <p class="page-sub">上传本月科室排班，OCR 自动解析，用户复核后生成分享图。</p>
+            <div class="upload-card">拍照 / 上传排班表</div>
+            <div class="scan-box">
+              <div class="paper-table" aria-hidden="true">
+                <i class="cell name"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i>
+                <i class="cell name"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i>
+                <i class="cell name"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i>
+                <i class="cell name"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i>
+              </div>
+              <div class="scan-line"></div>
+            </div>
+            <div class="ocr-list">
+              <div class="ocr-row" data-row="1"><span class="mini-tag">06/23</span><span>马医生 · CT 室</span><b>早班</b></div>
+              <div class="ocr-row" data-row="2"><span class="mini-tag">06/24</span><span>刘医生 · DR 室</span><b>中班</b></div>
+              <div class="ocr-row" data-row="3"><span class="mini-tag">06/25</span><span>陈医生 · MRI</span><b>夜班</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="process-panel">
+        <h3>智能排班流程</h3>
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div><b>拍照 / 上传</b><span>选择本月科室排班图片或表格截图。</span></div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div><b>OCR 自动解析</b><span>识别医生、日期、班次，并提示用户复核。</span></div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div><b>生成带水印分享图</b><span>排班负责人确认后，再导出给同事查看。</span></div>
+        </div>
+      </div>
+
+      <div class="poster-card">
+        <div class="poster-title">
+          <h3>2026年6月科室排班表</h3>
+          <div class="watermark">医图灵水印</div>
+        </div>
+        <div class="schedule-grid">
+          <div class="head">姓名</div><div class="head">23</div><div class="head">24</div><div class="head">25</div><div class="head">26</div><div class="head">27</div><div class="head">28</div><div class="head">29</div>
+          <div class="name">马医生</div><div>早</div><div>早</div><div>休</div><div>中</div><div>夜</div><div>休</div><div>早</div>
+          <div class="name">刘医生</div><div>中</div><div>休</div><div>早</div><div>早</div><div>中</div><div>夜</div><div>休</div>
+          <div class="name">陈医生</div><div>夜</div><div>中</div><div>夜</div><div>休</div><div>早</div><div>早</div><div>中</div>
+          <div class="name">王医生</div><div>休</div><div>夜</div><div>中</div><div>早</div><div>休</div><div>中</div><div>夜</div>
+        </div>
+        <div class="callout">已生成带水印分享图。识别结果需由用户复核确认后再分享。</div>
+      </div>
+    </section>
+
+    <section class="scene scene-anonymize" data-scene="anonymize">
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:43</span><span>5G 100%</span></div>
+          <div class="app-page page-anonymize">
+            <h2 class="page-title">脱敏助手</h2>
+            <p class="page-sub">框选敏感区后重新绘制为不可还原黑色像素，再生成可分享素材。</p>
+            <div class="anonymize-art">
+              <span class="sensitive">姓名：张某某  检查号：A1026</span>
+              <span class="redact-box"></span>
+              <span class="blackout"></span>
+            </div>
+            <div class="checklist">
+              <div class="check"><span>患者姓名 / 检查号</span><b>待处理</b></div>
+              <div class="check"><span>二维码 / 条码</span><b>未发现</b></div>
+              <div class="check"><span>医院与医生信息</span><b>待复核</b></div>
+            </div>
+            <div class="button-row">
+              <div class="btn">一键抹除</div>
+              <div class="btn secondary">导出脱敏图</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="safe-card">
+        <div class="safe-title">脱敏后才允许分享</div>
+        <div class="safe-preview">
+          <div class="mini-image"></div>
+          <p>已生成新的脱敏图片文件；选区像素被真实抹除，后续分享卡和社区草稿只使用脱敏后版本。</p>
+        </div>
+        <div class="callout">医图灵不做影像自动分析、疾病判断、辅助诊断或用药分诊。</div>
+      </div>
+    </section>
+
+    <section class="scene scene-knowledge" data-scene="knowledge">
+      <div class="phone">
+        <div class="screen">
+          <div class="status"><span>9:44</span><span>5G 100%</span></div>
+          <div class="app-page page-dict">
+            <h2 class="page-title">避坑词典</h2>
+            <p class="page-sub">医保收费、扫描范围、体位标准和基层高频提醒。</p>
+            <div class="tabs">
+              <div class="tab on">收费规则</div>
+              <div class="tab">体位标准</div>
+              <div class="tab">扫描范围</div>
+            </div>
+            <div class="dict-list">
+              <div class="dict-card">
+                <h4>胸部 DR 正侧位</h4>
+                <p>避坑：体位不正或补拍需记录原因，收费口径以当地医保目录和医院财务为准。</p>
+              </div>
+              <div class="dict-card">
+                <h4>上下腹部 CT</h4>
+                <p>提醒：扫描范围与项目名称保持一致，增强检查需记录造影剂信息。</p>
+              </div>
+            </div>
+          </div>
+          <div class="app-page page-community">
+            <h2 class="page-title">经验共创</h2>
+            <p class="page-sub">只展示脱敏后的学习笔记、报告表达和避坑经验。</p>
+            <div class="post-card">
+              <h4>胸部 DR 体位偏斜的复盘</h4>
+              <p>作者署名 · 已脱敏 · 出书候选</p>
+            </div>
+            <div class="post-card">
+              <h4>急诊 CT 扫描范围提醒</h4>
+              <p>来自一线复盘：先核对项目，再补充备注。</p>
+            </div>
+            <div class="compose">+ 发布一条已脱敏经验</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="knowledge-panel">
+        <h3>规范避坑 + 经验共创</h3>
+        <div class="dict-card">
+          <h4>一线规范沉淀</h4>
+          <p>把收费拆解、扫描范围、体位标准和地区规则差异整理成可搜索词典。</p>
+        </div>
+        <div class="post-card">
+          <h4>署名激励的社区机制</h4>
+          <p>脱敏内容通过审核后进入经验库，优质案例可获得署名与激励。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene scene-chain" data-scene="chain">
+      <div class="chain-scene">
+        <div class="chain-card">
+          <h2>下一步：基于 Injective 构建<br>“贡献—激励—凭证”链上层</h2>
+          <p>围绕医务经验共创建立可审计、可结算、可存证的协作网络，链上只记录贡献、权益与凭证，不承载患者隐私数据。</p>
+          <div class="chain-grid">
+            <div class="chain-item"><b>经验分润上链</b><span>优质内容贡献、共创署名与收益分配形成可追溯记录。</span></div>
+            <div class="chain-item"><b>AI 代理链上结算</b><span>面向工具调用、内容审核与协作任务的自动化结算。</span></div>
+            <div class="chain-item"><b>学分 / 凭证 SBT</b><span>继续教育、经验贡献和社区荣誉可做不可转让凭证存证。</span></div>
+          </div>
+          <div class="chain-note">患者数据绝不上链</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene scene-close" data-scene="close">
+      <div class="closing">
+        <div class="closing-card">
+          <h2>医图灵</h2>
+          <p>github.com/VIVIANMA-hub/yituling-app</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="subtitle"></div>
+    <div class="cursor" aria-hidden="true"></div>
+  </main>
+
+  <script>
+    const DURATION = 90;
+    const subtitles = [
+      [0, 8, "医图灵 —— 基层医务工作者的非诊断类效率工具 + 经验共创社区。"],
+      [8, 30, "拍照即解析，自动生成带水印排班分享图。"],
+      [30, 52, "本地真实抹除像素，合规脱敏后才能分享 —— 不做任何诊断。"],
+      [52, 68, "一线规范避坑 + 署名激励的经验共创社区。"],
+      [68, 85, "下一步：基于 Injective 构建“贡献—激励—凭证”链上层 —— 经验分润上链、AI 代理链上结算、学分/凭证 SBT 存证。患者数据绝不上链。"],
+      [85, 90, "项目名 + GitHub：github.com/VIVIANMA-hub/yituling-app"]
+    ];
+
+    const scenes = {
+      home: document.querySelector(".scene-home"),
+      schedule: document.querySelector(".scene-schedule"),
+      anonymize: document.querySelector(".scene-anonymize"),
+      knowledge: document.querySelector(".scene-knowledge"),
+      chain: document.querySelector(".scene-chain"),
+      close: document.querySelector(".scene-close")
+    };
+
+    const pages = {
+      schedule: document.querySelector(".page-schedule"),
+      anonymize: document.querySelector(".page-anonymize"),
+      dict: document.querySelector(".page-dict"),
+      community: document.querySelector(".page-community")
+    };
+
+    const subtitle = document.querySelector(".subtitle");
+    const fill = document.querySelector(".timer-fill");
+    const cursor = document.querySelector(".cursor");
+    const poster = document.querySelector(".poster-card");
+    const processPanel = document.querySelector(".process-panel");
+    const safeCard = document.querySelector(".safe-card");
+    const knowledgePanel = document.querySelector(".knowledge-panel");
+    const anonymizeArt = document.querySelector(".anonymize-art");
+    const checks = document.querySelectorAll(".page-anonymize .check b");
+
+    let startTime = null;
+    let lastTapKey = "";
+
+    function activeScene(name) {
+      Object.entries(scenes).forEach(([key, el]) => el.classList.toggle("active", key === name));
+    }
+
+    function showPage(pageName) {
+      Object.entries(pages).forEach(([key, el]) => el.classList.toggle("show", key === pageName));
+    }
+
+    function setCursor(x, y, visible = true, tapKey = "") {
+      cursor.style.opacity = visible ? "1" : "0";
+      cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      if (tapKey && tapKey !== lastTapKey) {
+        cursor.classList.remove("tap");
+        void cursor.offsetWidth;
+        cursor.classList.add("tap");
+        lastTapKey = tapKey;
+      }
+    }
+
+    function currentSubtitle(t) {
+      const line = subtitles.find(([a, b]) => t >= a && t < b);
+      return line ? line[2] : subtitles[subtitles.length - 1][2];
+    }
+
+    function update(t) {
+      fill.style.width = `${Math.min(100, (t / DURATION) * 100)}%`;
+      subtitle.textContent = currentSubtitle(t);
+
+      poster.classList.remove("show");
+      processPanel?.classList.remove("hide");
+      safeCard.classList.remove("show");
+      knowledgePanel.classList.remove("show");
+      anonymizeArt.classList.remove("redacting", "redacted");
+      checks.forEach((check, index) => {
+        check.textContent = index === 1 ? "未发现" : "待处理";
+      });
+      document.querySelectorAll(".ocr-row").forEach(row => row.classList.remove("on"));
+
+      if (t < 8) {
+        activeScene("home");
+        setCursor(300 + t * 18, 452 - t * 9, t > 2 && t < 7);
+        return;
+      }
+
+      if (t < 30) {
+        activeScene("schedule");
+        showPage("schedule");
+        const local = t - 8;
+        if (local < 3) setCursor(262, 438, true, "schedule-tab");
+        else if (local < 7) setCursor(292, 230, true, "upload");
+        else if (local < 14) setCursor(400, 274, true);
+        else if (local < 18) setCursor(408, 474, true);
+        else setCursor(1048, 506, true, "share");
+
+        if (local > 8) document.querySelector('[data-row="1"]').classList.add("on");
+        if (local > 10.5) document.querySelector('[data-row="2"]').classList.add("on");
+        if (local > 13) document.querySelector('[data-row="3"]').classList.add("on");
+        if (local > 15) {
+          poster.classList.add("show");
+          processPanel?.classList.add("hide");
+        }
+        return;
+      }
+
+      if (t < 52) {
+        activeScene("anonymize");
+        showPage("anonymize");
+        const local = t - 30;
+        if (local < 5) setCursor(287, 238, true, "pick-image");
+        else if (local < 10) {
+          setCursor(242 + local * 4, 224 + local * 2, true, "draw");
+          anonymizeArt.classList.add("redacting");
+        } else if (local < 15) {
+          setCursor(246, 577, true, "redact");
+          anonymizeArt.classList.add("redacted");
+          checks[0].textContent = "已抹除";
+          checks[2].textContent = "已复核";
+        } else {
+          setCursor(360, 577, true, "export");
+          anonymizeArt.classList.add("redacted");
+          checks[0].textContent = "已抹除";
+          checks[2].textContent = "已复核";
+          safeCard.classList.add("show");
+        }
+        return;
+      }
+
+      if (t < 68) {
+        activeScene("knowledge");
+        const local = t - 52;
+        if (local < 7) {
+          showPage("dict");
+          setCursor(294, 274, true, "dict");
+        } else {
+          showPage("community");
+          setCursor(302, 596, true, "compose");
+        }
+        if (local > 4) knowledgePanel.classList.add("show");
+        return;
+      }
+
+      if (t < 85) {
+        activeScene("chain");
+        setCursor(0, 0, false);
+        return;
+      }
+
+      activeScene("close");
+      setCursor(0, 0, false);
+    }
+
+    function frame(now) {
+      if (window.__manualDemo === true) return;
+      if (startTime === null) startTime = now;
+      const t = Math.min(DURATION, (now - startTime) / 1000);
+      update(t);
+      if (t < DURATION) {
+        requestAnimationFrame(frame);
+      } else {
+        window.__demoDone = true;
+      }
+    }
+
+    window.__demoReady = true;
+    window.__demoJump = (seconds) => {
+      window.__manualDemo = true;
+      update(seconds);
+    };
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

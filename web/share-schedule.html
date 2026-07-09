@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1F6FEB">
+  <meta name="referrer" content="no-referrer">
+  <title>排班 · 一图灵</title>
+  <meta property="og:title" content="排班分享 · 一图灵">
+  <meta property="og:description" content="基层医生的排班分享，由一图灵 App 自动生成">
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      background: #F5F5F7;
+      font-family: -apple-system, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      color: #1D1D1F;
+      line-height: 1.4;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 16px 16px 80px; }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 18px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    }
+    .head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .logo {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #1F6FEB 0%, #4A90E2 100%);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700;
+    }
+    .brand .name { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+    .brand .sub { font-size: 12px; color: #8E8E93; margin-top: 2px; }
+    .title { font-size: 20px; font-weight: 700; margin-top: 14px; }
+    .meta { font-size: 13px; color: #6E6E73; margin-top: 4px; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .legend-item {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #F2F3F5;
+      color: #3C3C43;
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .weekhead {
+      text-align: center; font-size: 12px; color: #86868B;
+      padding: 4px 0;
+    }
+    .weekhead.wkend { color: #D9342B; }
+    .cell {
+      aspect-ratio: 1 / 1.05;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #ECEEF1;
+      padding: 4px 4px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .cell.muted { background: #FAFBFC; border-color: #F2F3F5; }
+    .cell.muted .day-num { color: #C7C7CC; }
+    .cell.holiday { background: #FCE4DE; border-color: #F5BAB0; }
+    .cell.holiday .day-num { color: #D9342B; }
+    .cell.weekend .day-num { color: #D9342B; }
+    .day-num { font-size: 12px; font-weight: 600; line-height: 1; }
+    .day-hol { font-size: 10px; color: #D9342B; margin-top: 1px; line-height: 1; }
+    .chip {
+      margin-top: auto;
+      align-self: stretch;
+      text-align: center;
+      padding: 3px 0;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .chip.rest { background: #F2F3F5; color: #86868B; }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 11px;
+      color: #8E8E93;
+      line-height: 1.6;
+    }
+    .footer a { color: #1F6FEB; text-decoration: none; }
+    .respond-card {
+      margin-top: 16px;
+      padding: 18px 18px 16px;
+      background: linear-gradient(135deg, #1F6FEB 0%, #4A90E2 100%);
+      border-radius: 16px;
+      color: #fff;
+    }
+    .respond-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .respond-card p { font-size: 12px; opacity: 0.85; line-height: 1.5; margin-bottom: 12px; }
+    .respond-btn {
+      display: block;
+      text-align: center;
+      padding: 12px 0;
+      background: #fff;
+      color: #1F6FEB;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .respond-hint {
+      font-size: 11px;
+      margin-top: 8px;
+      opacity: 0.75;
+      text-align: center;
+    }
+    .disclaim {
+      margin-top: 12px;
+      padding: 10px 12px;
+      font-size: 11px;
+      color: #6E6E73;
+      background: #FFFBE6;
+      border: 1px solid #FFE58F;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .error-card {
+      max-width: 480px;
+      margin: 60px auto;
+      text-align: center;
+      padding: 24px 20px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    }
+    .error-card .ico { font-size: 36px; }
+    .error-card h2 { margin: 12px 0 6px; font-size: 18px; }
+    .error-card p { color: #6E6E73; font-size: 14px; }
+    .cta {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 10px 22px;
+      background: #1F6FEB;
+      color: #fff;
+      border-radius: 999px;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // ---------- base64url 解码（与 common/shareEncode.js 对齐） ----------
+    function fromBase64Url(b64url) {
+      var b64 = b64url.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((b64url.length + 3) % 4)
+      try {
+        return decodeURIComponent(escape(atob(b64)))
+      } catch (e) {
+        throw new Error('PAYLOAD_DECODE_FAIL')
+      }
+    }
+    function decodePayload(encoded) {
+      var obj = JSON.parse(fromBase64Url(encoded))
+      if (!obj || obj.v !== 1) throw new Error('UNSUPPORTED_VERSION')
+      return obj
+    }
+
+    // ---------- 节假日（与 common/holidays.js 2026 数据保持一致） ----------
+    var HOLIDAYS_2026 = {}
+    function addHolidayRange(name, dates) { for (var i=0;i<dates.length;i++) HOLIDAYS_2026[dates[i]] = { name: name } }
+    addHolidayRange('元旦', ['2026-01-01','2026-01-02','2026-01-03'])
+    addHolidayRange('春节', ['2026-02-15','2026-02-16','2026-02-17','2026-02-18','2026-02-19','2026-02-20','2026-02-21','2026-02-22','2026-02-23'])
+    addHolidayRange('清明', ['2026-04-04','2026-04-05','2026-04-06'])
+    addHolidayRange('劳动节', ['2026-05-01','2026-05-02','2026-05-03','2026-05-04','2026-05-05'])
+    addHolidayRange('端午', ['2026-06-19','2026-06-20','2026-06-21'])
+    addHolidayRange('中秋', ['2026-09-25','2026-09-26','2026-09-27'])
+    addHolidayRange('国庆', ['2026-10-01','2026-10-02','2026-10-03','2026-10-04','2026-10-05','2026-10-06','2026-10-07','2026-10-08'])
+    function pad2(n){ return String(n).padStart(2,'0') }
+    function getHoliday(year, month, day) {
+      if (year !== 2026) return null
+      return HOLIDAYS_2026[year + '-' + pad2(month) + '-' + pad2(day)] || null
+    }
+
+    // ---------- 渲染 ----------
+    var WEEKS = ['日','一','二','三','四','五','六']
+
+    function renderError(msg, hint) {
+      document.getElementById('app').innerHTML =
+        '<div class="error-card">' +
+          '<div class="ico">😕</div>' +
+          '<h2>' + msg + '</h2>' +
+          '<p>' + (hint || '请回到分享方，重新生成链接。') + '</p>' +
+          '<a class="cta" href="https://yituling.com">了解一图灵 App</a>' +
+        '</div>'
+    }
+
+    function shiftLabel(types, key) {
+      for (var i=0;i<types.length;i++) if (types[i].k === key) return types[i].s || types[i].n || key
+      return ''
+    }
+    function shiftColor(types, key) {
+      for (var i=0;i<types.length;i++) if (types[i].k === key) return types[i].c || '#475467'
+      return '#86868B'
+    }
+    function shiftTime(types, key) {
+      for (var i=0;i<types.length;i++) if (types[i].k === key) return types[i].tm || ''
+      return ''
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, function(c){
+        return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
+      })
+    }
+
+    function render(p, shareId) {
+      var year = p.y, month = p.m
+      var daysInMonth = new Date(year, month, 0).getDate()
+      var firstWk = new Date(year, month - 1, 1).getDay()
+      var prevDays = new Date(year, month - 1, 0).getDate()
+
+      // 班次图例（只展示有用到的）
+      var usedKeys = []
+      for (var d = 1; d <= daysInMonth; d++) {
+        var k = p.s[String(d)]
+        if (k && k !== 'rest' && usedKeys.indexOf(k) === -1) usedKeys.push(k)
+      }
+      var legendHtml = usedKeys.map(function(k){
+        var color = shiftColor(p.t, k)
+        var name = shiftLabel(p.t, k)
+        var tm = shiftTime(p.t, k)
+        return '<span class="legend-item">' +
+          '<span class="legend-dot" style="background:' + color + '"></span>' +
+          escapeHtml(name) + (tm ? ' · ' + escapeHtml(tm) : '') +
+        '</span>'
+      }).join('')
+
+      // 星期表头
+      var wkHead = WEEKS.map(function(w, i){
+        return '<div class="weekhead' + (i===0||i===6?' wkend':'') + '">' + w + '</div>'
+      }).join('')
+
+      // 上月占位
+      var prefix = ''
+      for (var i = 0; i < firstWk; i++) {
+        prefix += '<div class="cell muted"><span class="day-num">' + (prevDays - firstWk + i + 1) + '</span></div>'
+      }
+      // 本月
+      var body = ''
+      for (var d = 1; d <= daysInMonth; d++) {
+        var wk = new Date(year, month - 1, d).getDay()
+        var isWkend = wk === 0 || wk === 6
+        var hol = getHoliday(year, month, d)
+        var key = p.s[String(d)] || 'rest'
+        var color = shiftColor(p.t, key)
+        var label = key === 'rest' ? '休' : shiftLabel(p.t, key)
+        var chipStyle = key === 'rest'
+          ? 'background:#F2F3F5;color:#86868B'
+          : 'background:' + color + '1F;color:' + color
+        var cls = 'cell' + (isWkend ? ' weekend' : '') + (hol ? ' holiday' : '')
+        body += '<div class="' + cls + '">' +
+          '<span class="day-num">' + d + '</span>' +
+          (hol ? '<span class="day-hol">' + escapeHtml(hol.name) + '</span>' : '') +
+          '<span class="chip" style="' + chipStyle + '">' + escapeHtml(label) + '</span>' +
+        '</div>'
+      }
+      // 下月占位
+      var total = firstWk + daysInMonth
+      var pad = (7 - total % 7) % 7
+      var suffix = ''
+      for (var i = 1; i <= pad; i++) {
+        suffix += '<div class="cell muted"><span class="day-num">' + i + '</span></div>'
+      }
+
+      document.getElementById('app').innerHTML =
+        '<div class="wrap">' +
+          '<div class="card">' +
+            '<div class="head">' +
+              '<div class="logo">医</div>' +
+              '<div class="brand">' +
+                '<div class="name">一图灵</div>' +
+                '<div class="sub">基层医生的排班助手</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="title">' + escapeHtml(p.d) + ' · ' + year + '年' + month + '月排班</div>' +
+            '<div class="meta">共 ' + daysInMonth + ' 天 · 仅用于排班整理与分享</div>' +
+            (legendHtml ? '<div class="legend">' + legendHtml + '</div>' : '') +
+            '<div class="grid">' + wkHead + prefix + body + suffix + '</div>' +
+            (shareId ?
+              '<div class="respond-card">' +
+                '<h3>在 App 内响应这份排班</h3>' +
+                '<p>登录一图灵 App 后可一键「同意」、「申请休假/调班」或「补充备注」，发布人会收到回执。</p>' +
+                '<a class="respond-btn" href="yituling://schedule/respond?s=' + encodeURIComponent(shareId) + '">打开一图灵 App</a>' +
+                '<div class="respond-hint">未安装？<a href="https://yituling.com" style="color:#fff;text-decoration:underline">点此下载</a></div>' +
+              '</div>'
+              : ''
+            ) +
+            '<div class="disclaim">本图由用户授权后由一图灵 App 自动生成，仅用于排班整理与分享，不构成任何医疗决策建议。如有差错请以发布人确认为准。</div>' +
+            '<div class="footer">由 <a href="https://yituling.com">一图灵 App</a> 生成 · 桂ICP备2026008099号-1</div>' +
+          '</div>' +
+        '</div>'
+
+      document.title = p.d + ' · ' + year + '年' + month + '月排班 · 一图灵'
+    }
+
+    // ---------- 入口 ----------
+    try {
+      // hash 路由：兼容 #/?d=xxx 和 ?d=xxx
+      var raw = location.search + ' ' + location.hash
+      var m = raw.match(/[?&#]d=([A-Za-z0-9_\-]+)/)
+      var ms = raw.match(/[?&#]s=([A-Za-z0-9_\-]+)/)
+      var shareId = ms ? decodeURIComponent(ms[1]) : ''
+      if (!m) { renderError('链接无效', '没有找到排班数据，可能链接被截断。'); }
+      else {
+        var p = decodePayload(m[1])
+        render(p, shareId)
+      }
+    } catch (e) {
+      renderError('排班数据读取失败', e.message || '请回到分享方重新生成链接。')
+    }
+  </script>
+</body>
+</html>

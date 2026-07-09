@@ -1,0 +1,17 @@
+{
+  "name": "yituling-showcase",
+  "displayName": "一图灵（医图灵）· 参赛展示版",
+  "version": "1.0.0",
+  "description": "面向基层医务工作者的非诊断类效率工具。本仓库为参赛展示版：仅包含前端界面与公共工具代码，云端核心逻辑与完整词库不随仓库发布。",
+  "private": true,
+  "scripts": {
+    "test": "node tests/holidays/run.js && node tests/posterUtils/run.js && node tests/shareEncode/run.js && node tests/scheduleValidator/run.js"
+  },
+  "author": "马文雯（兔灵科技工作室）",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {},
+  "engines": {
+    "HBuilderX": "^3.1.0",
+    "uni-app": "^4.03"
+  }
+}
